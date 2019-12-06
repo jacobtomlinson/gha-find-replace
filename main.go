@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 )
 
 func check(e error) {
@@ -41,7 +40,8 @@ func findAndReplace(path string, find string, replace string) (bool, error) {
 		read, readErr := ioutil.ReadFile(path)
 		check(readErr)
 
-		newContents := strings.Replace(string(read), find, replace, -1)
+		re := regexp.MustCompile(find)
+		newContents := re.ReplaceAllString(string(read), replace)
 
 		if newContents != string(read) {
 			writeErr := ioutil.WriteFile(path, []byte(newContents), 0)
