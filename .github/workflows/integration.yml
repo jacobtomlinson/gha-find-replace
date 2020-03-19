@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Self test
         id: selftest
-        uses: jacobtomlinson/gha-find-replace@master
+        uses: ${{ github.repository }}@${{ github.ref }}
         with:
           include: "test/"
           find: "world"
