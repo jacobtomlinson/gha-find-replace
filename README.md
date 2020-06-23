@@ -19,28 +19,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
-      with:
-        find: "hello"
-        replace: "world"
+      - uses: actions/checkout@master
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "hello"
+          replace: "world"
 ```
 
 ### Inputs
 
-| Input                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `find`  | A string to find and replace in your project files. _(This can be a regular expression)_   |
-| `replace`  | The string to replace it with.   |
-| `include` _(optional)_  | A regular expression of files to include. _Defaults to `.*`._    |
-| `exclude` _(optional)_  | A regular expression of files to exclude. _Defaults to `.git/`._    |
+| Input                  | Description                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| `find`                 | A string to find and replace in your project files. _(This can be a regular expression)_ |
+| `replace`              | The string to replace it with.                                                           |
+| `include` _(optional)_ | A regular expression of files to include. _Defaults to `.*`._                            |
+| `exclude` _(optional)_ | A regular expression of files to exclude. _Defaults to `.git/`._                         |
 
 ### Outputs
 
-| Output                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `modifiedFiles`  | The number of files that have been modified    |
+| Output          | Description                                 |
+| --------------- | ------------------------------------------- |
+| `modifiedFiles` | The number of files that have been modified |
 
 ## Examples
 
@@ -55,13 +55,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
-      with:
-        find: "hello"
-        replace: "world"
-        include: "justthisdirectory/"
+      - uses: actions/checkout@master
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "hello"
+          replace: "world"
+          include: "justthisdirectory/"
 ```
 
 ### Filter by file name
@@ -75,13 +75,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
-      with:
-        find: "hello"
-        replace: "world"
-        include: "README.md"  # Will match all README.md files in any nested directory
+      - uses: actions/checkout@master
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "hello"
+          replace: "world"
+          include: "README.md" # Will match all README.md files in any nested directory
 ```
 
 ### Exclude by file type
@@ -95,11 +95,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
-      with:
-        find: "hello"
-        replace: "world"
-        exclude: "*.py"  # Do not modify Python files
+      - uses: actions/checkout@master
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "hello"
+          replace: "world"
+          exclude: "*.py" # Do not modify Python files
 ```
+
+## Publishing
+
+To publish a new version of this Action we need to update the Docker image tag in `action.yml` and also create a new release on GitHub.
+
+- Work out the next tag version number.
+- Update the Docker image in `action.yml`.
+- Create a new release on GitHub with the same tag.
