@@ -5,9 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Update action.yml to build locally
+        run: |
+          sed -i '/.*image\:.*/image\: \"Dockerfile\"/' action.yml
       - name: Self test
         id: selftest
-        uses: jacobtomlinson/gha-find-replace@master
+        uses: ./
         with:
           include: "test/"
           find: "world"
