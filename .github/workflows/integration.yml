@@ -8,6 +8,7 @@ jobs:
       - name: Update action.yml to build locally
         run: |
           sed -i '/.*image\:.*/image\: \"Dockerfile\"/' action.yml
+          cat action.yml
       - name: Self test
         id: selftest
         uses: ./
