@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Update action.yml to build locally
-        run: |
-          sed -i 's/.*image\:.*/  image\: \"Dockerfile\"/' action.yml
-          cat action.yml
+      # - name: Update action.yml to build locally
+      #   run: |
+      #     sed -i 's/.*image\:.*/  image\: \"Dockerfile\"/' action.yml
+      #     cat action.yml
       - name: Self test
         id: selftest
         uses: ./
