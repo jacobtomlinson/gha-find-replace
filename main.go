@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"sort"
 	"strings"
 	"path/filepath"
 	"regexp"
@@ -89,9 +88,14 @@ func main() {
 			find := strings.SplitN(keyValue[0],"_",2)[1]
 			replace := keyValue[1]
 
-			i := sort.Search(len(reserved), func(i int) bool { return reserved[i] == find })
+			found := false
+			for i := 0; i<len(reserved); i++ {
+				if reserved[i] == find {
+					found = true
+				}
+			}
 
-			if i == len(reserved) && reserved[i] != find {
+			if found==false {
 				files, filesErr := listFiles(include, exclude)
 				check(filesErr)
 				for _, path := range files {
