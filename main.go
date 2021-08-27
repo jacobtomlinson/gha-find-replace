@@ -91,7 +91,7 @@ func main() {
 
 			i := sort.Search(len(reserved), func(i int) bool { return reserved[i] == find })
 
-			if i == len(reserved) {
+			if i == len(reserved) && reserved[i] != find {
 				files, filesErr := listFiles(include, exclude)
 				check(filesErr)
 				for _, path := range files {
