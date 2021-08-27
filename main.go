@@ -37,8 +37,6 @@ func doesFileMatch(path string, include string, exclude string) bool {
 }
 
 func findAndReplace(path string, find string, replace string) (bool, error) {
-	fmt.Println("looking for:")
-	fmt.Println(find)
 	if find != replace {
 		read, readErr := ioutil.ReadFile(path)
 		check(readErr)
