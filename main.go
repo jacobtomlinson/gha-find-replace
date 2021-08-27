@@ -38,6 +38,8 @@ func doesFileMatch(path string, include string, exclude string) bool {
 }
 
 func findAndReplace(path string, find string, replace string) (bool, error) {
+	fmt.Println("looking for:")
+	fmt.Println(find)
 	if find != replace {
 		read, readErr := ioutil.ReadFile(path)
 		check(readErr)
@@ -63,7 +65,7 @@ func main() {
 
 	reserved := []string{"INCLUDE","EXCLUDE","FIND","REPLACE"}
 
-	//INPUT_PREFIX := "INPUT_"
+	INPUT_PREFIX := "INPUT_"
 
 	files, filesErr := listFiles(include, exclude)
 	check(filesErr)
@@ -82,18 +84,20 @@ func main() {
 	}
 
 	for _, pair := range os.Environ() {
-		if strings.Contains(pair,"INPUT_") {
+		if strings.Contains(pair,INPUT_PREFIX) {
 			keyValue := strings.SplitN(pair,"=",2)
-			find := keyValue[0]
+			find := strings.SplitN(keyValue[0],"_",2)[1]
 			replace := keyValue[1]
 
 			i := sort.Search(len(reserved), func(i int) bool { return reserved[i] == find })
 
 			if i == len(reserved) {
+				files, filesErr := listFiles(include, exclude)
+				check(filesErr)
 				for _, path := range files {
-					modified, findAndReplaceErr := findAndReplace(path, find, replace)
+					modified, findAndReplaceErr := findAndReplace(path, "(?i)"+find, replace)
 					check(findAndReplaceErr)
-			
+		
 					if modified {
 						modifiedCount++
 					}

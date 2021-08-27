@@ -27,4 +27,4 @@ jobs:
         run: |
           test "${{ steps.selftest.outputs.modifiedFiles }}" == "1"
           test "${{ steps.selftest2.outputs.modifiedFiles }}" == "1"
-          grep "Hello there" test/hello.txt
+          grep "there.. there" test/hello.txt
