@@ -16,7 +16,15 @@ jobs:
           include: "test/"
           find: "world"
           replace: "there"
+      - name: Self test
+        id: selftest2
+        uses: ./
+        with:
+          include: "test/"
+          Hello: "there.."
+
       - name: Check outputs and modified files
         run: |
           test "${{ steps.selftest.outputs.modifiedFiles }}" == "1"
+          test "${{ steps.selftest2.outputs.modifiedFiles }}" == "1"
           grep "Hello there" test/hello.txt
