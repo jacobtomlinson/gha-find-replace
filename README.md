@@ -61,7 +61,7 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          include: "justthisdirectory/"
+          include: "justthisdirectory\/"
 ```
 
 ### Filter by file name
@@ -81,7 +81,7 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          include: "README.md" # Will match all README.md files in any nested directory
+          include: ".*README\.md" # Will match all README.md files in any nested directory
 ```
 
 ### Exclude by file type
@@ -101,7 +101,7 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          exclude: "*.py" # Do not modify Python files
+          exclude: ".*\.py" # Do not modify Python files
 ```
 
 ## Publishing
