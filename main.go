@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"path/filepath"
 	"regexp"
 )
@@ -59,17 +60,52 @@ func main() {
 	find := os.Getenv("INPUT_FIND")
 	replace := os.Getenv("INPUT_REPLACE")
 
+	reserved := []string{"INCLUDE","EXCLUDE","FIND","REPLACE"}
+
+	INPUT_PREFIX := "INPUT_"
+
 	files, filesErr := listFiles(include, exclude)
 	check(filesErr)
 
 	modifiedCount := 0
 
-	for _, path := range files {
-		modified, findAndReplaceErr := findAndReplace(path, find, replace)
-		check(findAndReplaceErr)
+	if find!="" && replace!="" {
+		for _, path := range files {
+			modified, findAndReplaceErr := findAndReplace(path, find, replace)
+			check(findAndReplaceErr)
+	
+			if modified {
+				modifiedCount++
+			}
+		}
+	}
 
-		if modified {
-			modifiedCount++
+	for _, pair := range os.Environ() {
+		if strings.Contains(pair,INPUT_PREFIX) {
+			keyValue := strings.SplitN(pair,"=",2)
+			find := strings.SplitN(keyValue[0],"_",2)[1]
+			replace := keyValue[1]
+
+			found := false
+			for i := 0; i<len(reserved); i++ {
+				if reserved[i] == find {
+					found = true
+				}
+			}
+
+			if found==false {
+				files, filesErr := listFiles(include, exclude)
+				check(filesErr)
+				for _, path := range files {
+					modified, findAndReplaceErr := findAndReplace(path, "(?i)"+find, replace)
+					check(findAndReplaceErr)
+		
+					if modified {
+						modifiedCount++
+					}
+				}
+			}
+					
 		}
 	}
 
