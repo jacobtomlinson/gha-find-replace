@@ -11,11 +11,14 @@ inputs:
     default: ".git" # Ignore the `.git` dirtectory by default
     required: false
   find:
-    description: "The string we want to replace"
+    description: "The regular expression (or fixed string) we want to replace"
     required: true
   replace:
     description: "The new string to replace with"
     required: true
+  fixed:
+    description: "Whether to match with.find as a fixed string instead of a regular expression"
+    required: false
 outputs:
   modifiedFiles:
     description: "The number of files which have been modified"
