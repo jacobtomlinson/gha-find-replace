@@ -15,35 +15,35 @@ import (
 var ErrEnvVarEmpty = errors.New("getenv: environment variable empty")
 
 func getenvStr(key string) (string, error) {
-    v := os.Getenv(key)
-    if v == "" {
-        return v, ErrEnvVarEmpty
-    }
-    return v, nil
+	v := os.Getenv(key)
+	if v == "" {
+		return v, ErrEnvVarEmpty
+	}
+	return v, nil
 }
 
 func getenvInt(key string) (int, error) {
-    s, err := getenvStr(key)
-    if err != nil {
-        return 0, err
-    }
-    v, err := strconv.Atoi(s)
-    if err != nil {
-        return 0, err
-    }
-    return v, nil
+	s, err := getenvStr(key)
+	if err != nil {
+		return 0, err
+	}
+	v, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, err
+	}
+	return v, nil
 }
 
-func getenvBool(key string) (bool, error) {
-    s, err := getenvStr(key)
-    if err != nil {
-        return false, err
-    }
-    v, err := strconv.ParseBool(s)
-    if err != nil {
-        return false, err
-    }
-    return v, nil
+func getenvBool(key string, def bool) (bool, error) {
+	s, err := getenvStr(key)
+	if err != nil {
+		return def, err
+	}
+	v, err := strconv.ParseBool(s)
+	if err != nil {
+		return def, err
+	}
+	return v, nil
 }
 
 func check(e error) {
@@ -72,17 +72,17 @@ func doesFileMatch(path string, include string, exclude string) bool {
 	return false
 }
 
-func findAndReplace(path string, find string, replace string, fixed bool) (bool, error) {
+func findAndReplace(path string, find string, replace string, regex bool) (bool, error) {
 	if find != replace {
 		read, readErr := ioutil.ReadFile(path)
 		check(readErr)
 
 		var newContents = ""
-		if (fixed) {
-			newContents = strings.ReplaceAll(string(read), find, replace)
-		} else {
+		if regex {
 			re := regexp.MustCompile(find)
 			newContents = re.ReplaceAllString(string(read), replace)
+		} else {
+			newContents = strings.ReplaceAll(string(read), find, replace)
 		}
 
 		if newContents != string(read) {
@@ -100,13 +100,13 @@ func main() {
 	exclude, _ := getenvStr("INPUT_EXCLUDE")
 	find, findErr := getenvStr("INPUT_FIND")
 	replace, replaceErr := getenvStr("INPUT_REPLACE")
-	fixed, _ := getenvBool("INPUT_FIXED")
+	regex, _ := getenvBool("INPUT_REGEX", true)
 
-	if (findErr != nil) {
+	if findErr != nil {
 		panic(errors.New("gha-find-replace: expected with.find to be a string"))
 	}
 
-	if (replaceErr != nil) {
+	if replaceErr != nil {
 		panic(errors.New("gha-find-replace: expected with.replace to be a string"))
 	}
 
@@ -116,7 +116,7 @@ func main() {
 	modifiedCount := 0
 
 	for _, path := range files {
-		modified, findAndReplaceErr := findAndReplace(path, find, replace, fixed)
+		modified, findAndReplaceErr := findAndReplace(path, find, replace, regex)
 		check(findAndReplaceErr)
 
 		if modified {

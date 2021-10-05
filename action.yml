@@ -16,8 +16,8 @@ inputs:
   replace:
     description: "The new string to replace with"
     required: true
-  fixed:
-    description: "Whether to match with.find as a fixed string instead of a regular expression"
+  regex:
+    description: "Whether to match with.find as a regular expression instead of a fixed string"
     required: false
 outputs:
   modifiedFiles:
