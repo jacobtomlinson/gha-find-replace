@@ -131,6 +131,10 @@ func main() {
 		include = ".*"
 	}
 
+	if !globbed && exclude == ".git/**" {
+		exclude = "\\.git\\/.*"
+	}
+
 	files, filesErr := listFiles(include, exclude, globbed)
 	check(filesErr)
 
