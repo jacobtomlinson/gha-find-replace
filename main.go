@@ -54,10 +54,10 @@ func check(e error) {
 	}
 }
 
-func listFiles(include string, exclude string, globbed bool) ([]string, error) {
+func listFiles(include string, exclude string) ([]string, error) {
 	fileList := []string{}
 	err := filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
-		if doesFileMatch(path, include, exclude, globbed) {
+		if doesFileMatch(path, include, exclude) {
 			fileList = append(fileList, path)
 		}
 		return nil
@@ -65,17 +65,11 @@ func listFiles(include string, exclude string, globbed bool) ([]string, error) {
 	return fileList, err
 }
 
-func doesFileMatch(path string, include string, exclude string, globbed bool) bool {
+func doesFileMatch(path string, include string, exclude string) bool {
 	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
-		if globbed {
-			includeGlob := glob.MustCompile(include)
-			excludeGlob := glob.MustCompile(exclude)
-			return includeGlob.Match(path) && !excludeGlob.Match(path)
-		} else {
-			includeRe := regexp.MustCompile(include)
-			excludeRe := regexp.MustCompile(exclude)
-			return includeRe.Match([]byte(path)) && !excludeRe.Match([]byte(path))
-		}
+		includeGlob := glob.MustCompile(include)
+		excludeGlob := glob.MustCompile(exclude)
+		return includeGlob.Match(path) && !excludeGlob.Match(path)
 	}
 	return false
 }
@@ -109,7 +103,6 @@ func main() {
 	find, findErr := getenvStr("INPUT_FIND")
 	replace, replaceErr := getenvStr("INPUT_REPLACE")
 	regex, regexErr := getenvBool("INPUT_REGEX")
-	globbed, globbedErr := getenvBool("INPUT_GLOB")
 
 	if findErr != nil {
 		panic(errors.New("gha-find-replace: expected with.find to be a string"))
@@ -123,19 +116,7 @@ func main() {
 		regex = true
 	}
 
-	if globbedErr != nil {
-		globbed = true
-	}
-
-	if !globbed && include == "**" {
-		include = ".*"
-	}
-
-	if !globbed && exclude == ".git/**" {
-		exclude = "\\.git\\/.*"
-	}
-
-	files, filesErr := listFiles(include, exclude, globbed)
+	files, filesErr := listFiles(include, exclude)
 	check(filesErr)
 
 	modifiedCount := 0
