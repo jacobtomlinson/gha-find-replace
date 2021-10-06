@@ -25,16 +25,18 @@ jobs:
         with:
           find: "hello"
           replace: "world"
+          regex: false
 ```
 
 ### Inputs
 
-| Input                  | Description                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
-| `find`                 | A string to find and replace in your project files. _(This can be a [regular expression](https://github.com/google/re2/wiki/Syntax))_ |
-| `replace`              | The string to replace it with.                                                           |
-| `include` _(optional)_ | A regular expression of files to include. _Defaults to `.*`._                            |
-| `exclude` _(optional)_ | A regular expression of files to exclude. _Defaults to `.git/`._                         |
+| Input                  | Description                                                                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `find`                 | A string to find and replace in your project files. _(Defaults to a [regular expression](https://github.com/google/re2/wiki/Syntax).)_ |
+| `replace`              | The string to replace it with.                                                                                                         |
+| `include` _(optional)_ | A glob of files to include. _Defaults to `**`._                                                                                        |
+| `exclude` _(optional)_ | A glob of files to exclude. _Defaults to `.git/**` ._                                                                                  |
+| `regex` _(optional)_   | Whether to match with.find as a regular expression instead of a fixed string. _Defaults to `true`._                                    |
 
 ### Outputs
 
@@ -61,7 +63,8 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          include: "justthisdirectory\/"
+          include: "justthisdirectory/**"
+          regex: true
 ```
 
 ### Filter by file name
@@ -81,7 +84,7 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          include: ".*README\.md" # Will match all README.md files in any nested directory
+          include: "**README.md" # Will match all README.md files in any nested directory
 ```
 
 ### Exclude by file type
@@ -101,7 +104,7 @@ jobs:
         with:
           find: "hello"
           replace: "world"
-          exclude: ".*\.py" # Do not modify Python files
+          exclude: "**/*.py" # Do not modify Python files
 ```
 
 ## Publishing

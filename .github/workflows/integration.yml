@@ -13,7 +13,7 @@ jobs:
         id: selftest
         uses: ./
         with:
-          include: "test/"
+          include: "test/**"
           find: "world"
           replace: "there"
       - name: Check outputs and modified files
