@@ -10,6 +10,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/gobwas/glob"
 )
 
 var ErrEnvVarEmpty = errors.New("getenv: environment variable empty")
@@ -22,7 +24,7 @@ func getenvStr(key string) (string, error) {
 	return v, nil
 }
 
-func getenvInt(key string) (int, error) {
+func getenvInt(key string, def int) (int, error) {
 	s, err := getenvStr(key)
 	if err != nil {
 		return 0, err
@@ -34,14 +36,14 @@ func getenvInt(key string) (int, error) {
 	return v, nil
 }
 
-func getenvBool(key string, def bool) (bool, error) {
+func getenvBool(key string) (bool, error) {
 	s, err := getenvStr(key)
 	if err != nil {
-		return def, err
+		return true, err
 	}
 	v, err := strconv.ParseBool(s)
 	if err != nil {
-		return def, err
+		return true, err
 	}
 	return v, nil
 }
@@ -52,10 +54,10 @@ func check(e error) {
 	}
 }
 
-func listFiles(include string, exclude string) ([]string, error) {
+func listFiles(include string, exclude string, globbed bool) ([]string, error) {
 	fileList := []string{}
 	err := filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
-		if doesFileMatch(path, include, exclude) {
+		if doesFileMatch(path, include, exclude, globbed) {
 			fileList = append(fileList, path)
 		}
 		return nil
@@ -63,11 +65,17 @@ func listFiles(include string, exclude string) ([]string, error) {
 	return fileList, err
 }
 
-func doesFileMatch(path string, include string, exclude string) bool {
+func doesFileMatch(path string, include string, exclude string, globbed bool) bool {
 	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
-		includeRe := regexp.MustCompile(include)
-		excludeRe := regexp.MustCompile(exclude)
-		return includeRe.Match([]byte(path)) && !excludeRe.Match([]byte(path))
+		if globbed {
+			includeGlob := glob.MustCompile(include)
+			excludeGlob := glob.MustCompile(exclude)
+			return includeGlob.Match(path) && !excludeGlob.Match(path)
+		} else {
+			includeRe := regexp.MustCompile(include)
+			excludeRe := regexp.MustCompile(exclude)
+			return includeRe.Match([]byte(path)) && !excludeRe.Match([]byte(path))
+		}
 	}
 	return false
 }
@@ -100,7 +108,8 @@ func main() {
 	exclude, _ := getenvStr("INPUT_EXCLUDE")
 	find, findErr := getenvStr("INPUT_FIND")
 	replace, replaceErr := getenvStr("INPUT_REPLACE")
-	regex, _ := getenvBool("INPUT_REGEX", true)
+	regex, regexErr := getenvBool("INPUT_REGEX")
+	globbed, globbedErr := getenvBool("INPUT_GLOB")
 
 	if findErr != nil {
 		panic(errors.New("gha-find-replace: expected with.find to be a string"))
@@ -110,7 +119,19 @@ func main() {
 		panic(errors.New("gha-find-replace: expected with.replace to be a string"))
 	}
 
-	files, filesErr := listFiles(include, exclude)
+	if regexErr != nil {
+		regex = true
+	}
+
+	if globbedErr != nil {
+		globbed = true
+	}
+
+	if !globbed && include == "**" {
+		include = ".*"
+	}
+
+	files, filesErr := listFiles(include, exclude, globbed)
 	check(filesErr)
 
 	modifiedCount := 0

@@ -3,12 +3,12 @@ description: "Find and replace a string in your project files"
 author: "Jacob Tomlinson"
 inputs:
   include:
-    description: "A regular expression of files to include in our find and replace"
-    default: ".*" # Include everything by default
+    description: "A glob or regular expression of files to include in our find and replace"
+    default: "**" # Include everything by default
     required: false
   exclude:
-    description: "A regular expression of files to exclude in our find and replace"
-    default: ".git" # Ignore the `.git` dirtectory by default
+    description: "A glob or regular expression of files to exclude in our find and replace"
+    default: ".git/**" # Ignore the `.git` directory by default
     required: false
   find:
     description: "The regular expression (or fixed string) we want to replace"
@@ -18,6 +18,9 @@ inputs:
     required: true
   regex:
     description: "Whether to match with.find as a regular expression instead of a fixed string"
+    required: false
+  glob:
+    description: "Whether to match with.include or with.exclude as a glob instead of a regular expression"
     required: false
 outputs:
   modifiedFiles:
