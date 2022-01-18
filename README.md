@@ -107,6 +107,41 @@ jobs:
           exclude: "**/*.py" # Do not modify Python files
 ```
 
+### Pushing changes back
+
+Any modifications during a GitHub Actions workflow are only made to the working copy checked out by the `actions/checkout` step. If you want those changes to be pushed back to the repository you'll need to add a final step that does this.
+
+```yaml
+name: My Workflow
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "hello"
+          replace: "world"
+          regex: false
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+```
+
+_If you need the push event to trigger other workflows, use a `repo` scoped [Personal Access Token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)._
+
+```yaml
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.MY_PAT }}
+          branch: ${{ github.ref }}
+```
+
 ## Publishing
 
 To publish a new version of this Action we need to update the Docker image tag in `action.yml` and also create a new release on GitHub.
