@@ -57,7 +57,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
@@ -78,7 +78,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
@@ -98,7 +98,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
@@ -118,7 +118,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
@@ -127,9 +127,7 @@ jobs:
           regex: false
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+      - uses: EndBug/add-and-commit@v9
 ```
 
 _If you need the push event to trigger other workflows, use a `repo` scoped [Personal Access Token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)._
