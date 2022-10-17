@@ -97,6 +97,19 @@ func findAndReplace(path string, find string, replace string, regex bool) (bool,
 	return false, nil
 }
 
+func setGithubEnvOutput(key string, value int) {
+	outputFilename = os.Getenv("GITHUB_ENV")
+	f, err := os.OpenFile(outputFilename,
+			os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Println(err)
+		}
+		defer f.Close()
+		if _, err := f.WriteString(fmt.Sprintf(`%s=%d`, key,  value)); err != nil {
+			log.Println(err)
+		}
+}
+
 func main() {
 	include, _ := getenvStr("INPUT_INCLUDE")
 	exclude, _ := getenvStr("INPUT_EXCLUDE")
@@ -130,5 +143,5 @@ func main() {
 		}
 	}
 
-	fmt.Println(fmt.Sprintf(`::set-output name=modifiedFiles::%d`, modifiedCount))
+	setGithubEnvOutput("modifiedFiles", modifiedCount)
 }
