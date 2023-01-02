@@ -98,14 +98,14 @@ func findAndReplace(path string, find string, replace string, regex bool) (bool,
 }
 
 func setGithubEnvOutput(key string, value int) {
-	outputFilename := os.Getenv("GITHUB_ENV")
+	outputFilename := os.Getenv("GITHUB_OUTPUT")
 	f, err := os.OpenFile(outputFilename,
 			os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Println(err)
 		}
 		defer f.Close()
-		if _, err := f.WriteString(fmt.Sprintf(`%s=%d`, key,  value)); err != nil {
+		if _, err := f.WriteString(fmt.Sprintf("%s=%d\n", key, value)); err != nil {
 			log.Println(err)
 		}
 }
