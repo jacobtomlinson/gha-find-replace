@@ -122,7 +122,7 @@ func main() {
 	}
 
 	if replaceErr != nil {
-		panic(errors.New("gha-find-replace: expected with.replace to be a string"))
+		replace = ""
 	}
 
 	if regexErr != nil {
