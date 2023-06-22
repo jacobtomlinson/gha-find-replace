@@ -107,7 +107,7 @@ jobs:
           exclude: "**/*.py" # Do not modify Python files
 ```
 
-If you are getting an error message that reads, "refusing to allow a GitHub App to create or update workflow ..." it means that your GitHub action may be tring to edit your new workflow file. Omit this file from the find-and-replace search with `exclude: .`.
+If you are getting an error message that reads, "refusing to allow a GitHub App to create or update workflow ..." it means that your GitHub action may be trying to edit your new workflow file. Omit this file from the find-and-replace search with `exclude: .`.
 
 ```yaml
 name: My Workflow
