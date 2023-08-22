@@ -107,9 +107,7 @@ jobs:
           exclude: "**/*.py" # Do not modify Python files
 ```
 
-### Pushing changes back
-
-Any modifications during a GitHub Actions workflow are only made to the working copy checked out by the `actions/checkout` step. If you want those changes to be pushed back to the repository you'll need to add a final step that does this.
+If you are getting an error message that reads, "refusing to allow a GitHub App to create or update workflow ..." it means that your GitHub action may be trying to edit your new workflow file. Omit this file from the find-and-replace search with `exclude: .`.
 
 ```yaml
 name: My Workflow
@@ -124,12 +122,31 @@ jobs:
         with:
           find: "hello"
           replace: "world"
+          exclude: . # Do not modify this file
+```
+
+### Pushing changes back
+
+Any modifications during a GitHub Actions workflow are only made to the working copy checked out by the `actions/checkout` step. If you want those changes to be pushed back to the repository you'll need to add a final step that does this. You will have to give your workflow write permissions.
+
+```yaml
+name: My Workflow
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "hello"
+          replace: "world"
           regex: false
       - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        uses: stefanzweifel/git-auto-commit-action@v4
 ```
 
 _If you need the push event to trigger other workflows, use a `repo` scoped [Personal Access Token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line)._
