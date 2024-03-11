@@ -7,6 +7,8 @@ import (
 )
 
 func TestHappyPath(t *testing.T) {
+	_ = os.Mkdir("out", 0755)
+
 	if err := ioutil.WriteFile("out/data.txt", []byte("Hello world\n"), 0644); err != nil {
 		t.Error(err)
 	}
