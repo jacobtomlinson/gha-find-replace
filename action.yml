@@ -1,4 +1,4 @@
-name: "Find and Replace"
+name: "Find and Replace Action Fork"
 description: "Find and replace a string in your project files"
 author: "Jacob Tomlinson (FS Fork)"
 inputs:
