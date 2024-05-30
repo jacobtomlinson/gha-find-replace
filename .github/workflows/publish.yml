@@ -15,7 +15,7 @@ jobs:
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
-          name: jacobtomlinson/gha-find-replace
+          name: firststreet/gha-find-replace
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
