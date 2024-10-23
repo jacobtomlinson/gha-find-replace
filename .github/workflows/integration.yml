@@ -4,11 +4,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Update action.yml to build locally
         run: |
           sed -i 's/.*image\:.*/  image\: \"Dockerfile\"/' action.yml
           cat action.yml
+
       - name: Self test
         id: selftest
         uses: ./
@@ -16,6 +19,7 @@ jobs:
           include: "test/**"
           find: "world"
           replace: "there"
+
       - name: Check outputs and modified files
         run: |
           test "${{ steps.selftest.outputs.modifiedFiles }}" == "1"
