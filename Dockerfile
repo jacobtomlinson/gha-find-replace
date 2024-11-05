@@ -1,9 +1,7 @@
-FROM golang:1.13 as builder
+FROM golang:1.23 AS builder
 
 WORKDIR /app
 COPY . /app
-
-RUN go get -d -v
 
 # Statically compile our app for use in a distroless container
 RUN CGO_ENABLED=0 go build -ldflags="-w -s" -v -o app .

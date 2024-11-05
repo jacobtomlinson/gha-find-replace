@@ -58,7 +58,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
@@ -79,7 +81,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
@@ -99,7 +103,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
@@ -117,7 +123,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
@@ -139,13 +147,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: "hello"
           replace: "world"
           regex: false
+
       - name: Push changes
         uses: stefanzweifel/git-auto-commit-action@v4
 ```
@@ -162,17 +173,16 @@ _If you need the push event to trigger other workflows, use a `repo` scoped [Per
 
 ## Contributing
 
-Install [go](https://go.dev/doc/install). This project currently uses Go 1.13. We recommend [gvm](https://github.com/moovweb/gvm) to switch between multiple go versions.
+Install [go](https://go.dev/doc/install). This project currently uses Go 1.23. We recommend [gvm](https://github.com/moovweb/gvm) to switch between multiple go versions.
 
-```
+```shell
 $ go version
-go version go1.13 darwin/amd64
+go version go1.23.2 darwin/amd64
 ```
 
 Build and test.
 
-```
-go get -d -v
+```shell
 go test
 go build -v .
 ```
