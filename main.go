@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,18 +19,6 @@ func getenvStr(key string) (string, error) {
 	v := os.Getenv(key)
 	if v == "" {
 		return v, ErrEnvVarEmpty
-	}
-	return v, nil
-}
-
-func getenvInt(key string, def int) (int, error) {
-	s, err := getenvStr(key)
-	if err != nil {
-		return 0, err
-	}
-	v, err := strconv.Atoi(s)
-	if err != nil {
-		return 0, err
 	}
 	return v, nil
 }
@@ -76,10 +63,10 @@ func doesFileMatch(path string, include string, exclude string) bool {
 
 func findAndReplace(path string, find string, replace string, regex bool) (bool, error) {
 	if find != replace {
-		read, readErr := ioutil.ReadFile(path)
+		read, readErr := os.ReadFile(path)
 		check(readErr)
 
-		var newContents = ""
+		var newContents string
 		if regex {
 			re := regexp.MustCompile(find)
 			newContents = re.ReplaceAllString(string(read), replace)
@@ -88,7 +75,7 @@ func findAndReplace(path string, find string, replace string, regex bool) (bool,
 		}
 
 		if newContents != string(read) {
-			writeErr := ioutil.WriteFile(path, []byte(newContents), 0)
+			writeErr := os.WriteFile(path, []byte(newContents), 0)
 			check(writeErr)
 			return true, nil
 		}
@@ -99,15 +86,14 @@ func findAndReplace(path string, find string, replace string, regex bool) (bool,
 
 func setGithubEnvOutput(key string, value int) {
 	outputFilename := os.Getenv("GITHUB_OUTPUT")
-	f, err := os.OpenFile(outputFilename,
-			os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Println(err)
-		}
-		defer f.Close()
-		if _, err := f.WriteString(fmt.Sprintf("%s=%d\n", key, value)); err != nil {
-			log.Println(err)
-		}
+	f, err := os.OpenFile(outputFilename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+	if _, err := fmt.Fprintf(f, "%s=%d\n", key, value); err != nil {
+		log.Println(err)
+	}
 }
 
 func main() {
