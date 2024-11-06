@@ -1,27 +1,26 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
 
 func TestHappyPath(t *testing.T) {
-	_ = os.Mkdir("out", 0755)
+	_ = os.Mkdir("out", 0o755)
 
-	if err := ioutil.WriteFile("out/data.txt", []byte("Hello world\n"), 0644); err != nil {
+	if err := os.WriteFile("out/data.txt", []byte("Hello world\n"), 0o644); err != nil {
 		t.Error(err)
 	}
 
-	os.Setenv("INPUT_INCLUDE", "out/data.txt")
-	os.Setenv("INPUT_EXCLUDE", "")
-	os.Setenv("INPUT_FIND", "world")
-	os.Setenv("INPUT_REPLACE", "there")
-	os.Setenv("GITHUB_OUTPUT", "out/output.txt")
+	t.Setenv("INPUT_INCLUDE", "out/data.txt")
+	t.Setenv("INPUT_EXCLUDE", "")
+	t.Setenv("INPUT_FIND", "world")
+	t.Setenv("INPUT_REPLACE", "there")
+	t.Setenv("GITHUB_OUTPUT", "out/output.txt")
 
 	main()
 
-	data, err := ioutil.ReadFile("out/data.txt")
+	data, err := os.ReadFile("out/data.txt")
 	if err != nil {
 		t.Error(err)
 	}
