@@ -18,7 +18,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: jacobtomlinson/gha-find-replace
+          images: ghcr.io/jacobtomlinson/gha-find-replace
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern=v{{major}}
